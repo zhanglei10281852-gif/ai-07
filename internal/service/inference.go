@@ -250,7 +250,7 @@ func (s *InferenceService) transitionAny(ctx context.Context, runID string, targ
 			return err
 		}
 		now := s.clock.Now()
-		items, err := tx.ListInferenceRunInputs(ctx, run.WorkspaceID)
+		items, err := tx.ListInferenceRunInputs(ctx, run.ID)
 		if err != nil {
 			return err
 		}

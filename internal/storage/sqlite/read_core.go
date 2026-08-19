@@ -214,14 +214,13 @@ func scanInferenceRun(row scanner) (domain.InferenceRun, error) {
 	return run, nil
 }
 
-func (q *queries) ListInferenceRunInputs(ctx context.Context, scopeID string) ([]domain.DatasetSnapshot, error) {
+func (q *queries) ListInferenceRunInputs(ctx context.Context, runID string) ([]domain.DatasetSnapshot, error) {
 	rows, err := q.q.QueryContext(ctx, `SELECT dataset_snapshots.id, dataset_snapshots.workspace_id, dataset_snapshots.source_zone_id,
         dataset_snapshots.source_revision, dataset_snapshots.schema_family, dataset_snapshots.partition_count, dataset_snapshots.estimated_rows,
         dataset_snapshots.state, dataset_snapshots.expires_at, COALESCE(dataset_snapshots.run_id, ''), dataset_snapshots.quarantine_note,
         dataset_snapshots.version, dataset_snapshots.created_at, dataset_snapshots.updated_at
 		FROM dataset_snapshots JOIN inference_run_inputs ri ON ri.snapshot_id = dataset_snapshots.id
-		WHERE ri.run_id = ? OR dataset_snapshots.workspace_id = ?
-		ORDER BY ri.added_at, dataset_snapshots.id`, scopeID, scopeID)
+		WHERE ri.run_id = ? ORDER BY ri.added_at, dataset_snapshots.id`, runID)
 	if err != nil {
 		return nil, translateError("list run items", err)
 	}
